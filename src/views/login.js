@@ -65,23 +65,23 @@ export default function login(){
 
     return(
         <KeyboardAvoidingView style={styles.backgoud}>
-            <SafeAreaView stylo={styles.containerLogo}>
+            <SafeAreaView style={styles.containerLogo}>
                 <Animated.Image
                   style={{
                       width: logo.x,
-                      height:logo.y
+                      height:logo.y,
                     }}
                     source= { require('../../assets/img/logo.png')}
                 />
             </SafeAreaView>
              
-            <Animated.View style={[styles.container, { transform:[{ translateY }]}]} >
+            <Animated.View style={[styles.container, { opacity: opacity, transform:[{ translateY }]}]} >
 
 
                 <TextInput
                 style={styles.input}
                 placeholder="Email"
-                autoCorrect={false}z
+                autoCorrect={false}
                 onChangeText={() => {}}
                 />
 
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         height: '45',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 7,
+        borderRadius: 7
 
      }
 
