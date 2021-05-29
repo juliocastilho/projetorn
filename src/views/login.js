@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { KeyboardAvoidingView, 
          SafeAreaView, 
          Image, 
@@ -6,20 +6,71 @@ import { KeyboardAvoidingView,
          TextInput, 
          TouchableOpacity,
          Text,  
-         StyleSheet 
+         StyleSheet,
+         Animated,
+         Platform, 
+         Keyboard,
 } from 'react-native'
 
 
 export default function login(){
 
+    const [offset]  = useState (new Animated.ValueXY({x:0, y:95}));
+    const [opacity] = useState (new Animated.Value(0));
+    const [logo] =    useState (new Animated.ValueXY({x:270, y:200}));
+    
+    useEffect(() => {
+    
+    keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',keyboardDidShow);
+    keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',keyboardDidHide);
+       
+           Animated.parallel([
+            Animated.spring(offset.y, {
+                toValue: 0,
+                speed: 4,
+                bounciness: 20
+              }),
+              Animated.timing(opacity, {
+                toValue: 1,
+                duration: 200,
+              })
+           ]).start();   
+    }, []);
+
+
+    function keyboardDidShow(){
+        Animated.parallel([
+            Animated.timing(logo.x, {
+                toValue:  150,
+                duration: 190,
+            }),
+            Animated.timing(logo.y, {
+                toValue:  150,
+                duration: 190,
+            }),
+        ]).start();   
+    }
+
+    function keyboardDidHide(){
+        Animated.parallel([
+            Animated.timing(logo.x, {
+                toValue:  270,
+                duration: 200,
+            }),
+            Animated.timing(logo.y, {
+                toValue:  270,
+                duration: 200,
+            }),
+        ]).start();
+    }
 
     return(
-        <KeyboardAvoidingView style={styles.backgoud}>
+        <KeyboardAvoidingView style={styles.backgoud} behavior={ Platform.OS === 'ios' ? 'padding' : null}>
         <SafeAreaView style={styles.containerLogo}> 
-        <Image source = {require('../../assets/img/logo.png')} />
+        <Animated.Image style={{width: logo.x , height:logo.y }}  source = {require('../../assets/img/logo.png')} />
        </SafeAreaView>
 
-       <View style={styles.container}>
+       <Animated.View style={[styles.container, { opacity: opacity, transform: [{ translateY: offset.y }]}]}>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -42,7 +93,7 @@ export default function login(){
                     <Text></Text>
             </TouchableOpacity>
 
-       </View>
+       </Animated.View >
 
        </KeyboardAvoidingView>
     )
