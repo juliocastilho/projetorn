@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { KeyboardAvoidingView, 
          SafeAreaView, 
-         Image, 
-         View, 
          TextInput, 
          TouchableOpacity,
          Text,  
@@ -10,6 +8,7 @@ import { KeyboardAvoidingView,
          Animated,
          Platform, 
          Keyboard,
+         Alert,
 } from 'react-native'
 
 
@@ -21,20 +20,20 @@ export default function login(){
     
     useEffect(() => {
     
-    keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',keyboardDidShow);
-    keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',keyboardDidHide);
+     keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',keyboardDidShow);
+     keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',keyboardDidHide);
        
-           Animated.parallel([
+       Animated.parallel([
             Animated.spring(offset.y, {
                 toValue: 0,
                 speed: 4,
                 bounciness: 20
-              }),
+            }),
               Animated.timing(opacity, {
                 toValue: 1,
                 duration: 200,
               })
-           ]).start();   
+        ]).start();   
     }, []);
 
 
@@ -63,39 +62,82 @@ export default function login(){
             }),
         ]).start();
     }
+    
+    state = { nome:'' ,email:'' ,senha:'' ,confirmasenha:'' ,stageNew: false}
+
+    signinOrSignup = () => {
+        if( this.setState.stageNew){
+            Alert.alert('Sucesso!', 'Criar conta!')
+        } else {
+           Alert.alert('Sucesso!', 'Logar')
+         }
+    }
 
     return(
         <KeyboardAvoidingView style={styles.backgoud} behavior={ Platform.OS === 'ios' ? 'padding' : null}>
-        <SafeAreaView style={styles.containerLogo}> 
-        <Animated.Image style={{width: logo.x , height:logo.y }}  source = {require('../../assets/img/logo.png')} />
-       </SafeAreaView>
+        
+         <SafeAreaView style={styles.containerLogo}> 
+              <Animated.Image style={{width: logo.x , height:logo.y }}  source = {require('../../assets/img/logo.png')} />
+          </SafeAreaView>
+       
+           <Animated.View  style={[styles.container, { opacity: opacity, transform: [{ translateY: offset.y }]}]}>
+       
+              <Text style={styles.subtite}> 
+                  {this.state.stageNew ? 'Crie sua conta' : 'Informe seus dados'}
+              </Text>
+       
+              {this.state.stageNew &&  
+                  <TextInput
+                     style={styles.input}
+                     placeholder="Nome"
+                     autoCorrect={false}
+                     value={this.state.nome}
+                     onChangeText={nome => this.setState({ nome })}
+                    />
+                }
+               <TextInput
+                 style={styles.input}
+                 placeholder="Email"
+                 autoCorrect={false}
+                 value={this.state.email}
+                 onChangeText={email => this.setState({ email })}
+                />
 
-       <Animated.View style={[styles.container, { opacity: opacity, transform: [{ translateY: offset.y }]}]}>
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                autoCorrect={false}
-                onChangeText={() => {}}
-            />
+               <TextInput
+                 style={styles.input}
+                 placeholder="Senha"
+                 autoCorrect={false}
+                 value={this.state.senha}
+                 secureTextEntry= {true}
+                 onChangeText={senha => this.setState({ senha })}
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Senha"
-                autoCorrect={false}
-                onChangeText={() => {}}
-            />
+                {this.state.stageNew &&  
+                 <TextInput
+                     style={styles.input}
+                     placeholder="confirme a senha"
+                     autoCorrect={false}
+                     value={this.state.confirmasenha}
+                     secureTextEntry= {true}
+                     onChangeText={confirmasenha => this.setState({ confirmasenha })}
+                    /> 
+                }
 
-            <TouchableOpacity style={styles.btnSubmit}>
-                    <Text style={styles.btnText}>Entrar</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.btnSubmit} onPress={this.signinOrSignup}>
+                 <Text style={styles.btnText}>
+                     {this.state.stageNew ? 'Registar' : 'Entrar'}
+                 </Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity >
-                    <Text></Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={ () =>  this.setState({ stageNew: !this.state.stageNew })}>
+                 <Text style={styles.btnText}>
+                     {this.state.stageNew ? 'Já possui conta ?' : 'Ainda não possui conta ?'}
+                 </Text>
+                </TouchableOpacity>
 
-       </Animated.View >
+             </Animated.View >
 
-       </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -108,11 +150,16 @@ const styles = StyleSheet.create({
        justifyContent: 'center',
        backgroundColor: '#191919'
     },
-
     containerLogo:{
        flex: 1,
        alignItems: 'center',
        justifyContent: 'center',
+    },
+    subtite:{
+        color: '#FFF',
+        fontSize: 20,
+        textAlign:'center',
+        marginBottom: 10,
     },
     container:{
        flex:1,
@@ -134,11 +181,12 @@ const styles = StyleSheet.create({
        height: 45,
        alignItems: 'center',
        justifyContent: 'center',
-       borderRadius: 7
+       borderRadius: 7,
     },
     btnText:{
        color: '#FFF',
        fontSize: 16,
+       padding: 10
     },
 
 })
