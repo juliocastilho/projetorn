@@ -9,17 +9,22 @@ import { KeyboardAvoidingView,
          Platform, 
          Keyboard,
          Alert,
+         LogBox,
 } from 'react-native'
 
 
 export default function login(){
+
+    state = { nome:'' ,email:'' ,senha:'' ,confirmasenha:'' ,stageNew: false}
 
     const [offset]  = useState (new Animated.ValueXY({x:0, y:95}));
     const [opacity] = useState (new Animated.Value(0));
     const [logo] =    useState (new Animated.ValueXY({x:270, y:200}));
     
     useEffect(() => {
-    
+
+      LogBox.ignoreLogs(['Animated: `useNativeDriver`']);    //correção do useNativeDriver
+
      keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',keyboardDidShow);
      keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',keyboardDidHide);
        
@@ -27,7 +32,7 @@ export default function login(){
             Animated.spring(offset.y, {
                 toValue: 0,
                 speed: 4,
-                bounciness: 20
+                bounciness: 20,
             }),
               Animated.timing(opacity, {
                 toValue: 1,
@@ -63,10 +68,10 @@ export default function login(){
         ]).start();
     }
     
-    state = { nome:'' ,email:'' ,senha:'' ,confirmasenha:'' ,stageNew: false}
+      
 
     signinOrSignup = () => {
-        if( this.setState.stageNew){
+        if(this.setState.stageNew){
             Alert.alert('Sucesso!', 'Criar conta!')
         } else {
            Alert.alert('Sucesso!', 'Logar')
@@ -81,7 +86,7 @@ export default function login(){
           </SafeAreaView>
        
            <Animated.View  style={[styles.container, { opacity: opacity, transform: [{ translateY: offset.y }]}]}>
-       
+             
               <Text style={styles.subtite}> 
                   {this.state.stageNew ? 'Crie sua conta' : 'Informe seus dados'}
               </Text>
@@ -129,7 +134,7 @@ export default function login(){
                  </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={ () =>  this.setState({ stageNew: !this.state.stageNew })}>
+                <TouchableOpacity onPress={ () => this.setState({ stageNew: !this.state.stageNew })}>
                  <Text style={styles.btnText}>
                      {this.state.stageNew ? 'Já possui conta ?' : 'Ainda não possui conta ?'}
                  </Text>
